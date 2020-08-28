@@ -581,7 +581,6 @@ class Process
             }
 
             $assign->setConsumerOffsets($consumerOffsets);
-            $assign->setCommitOffsets($assign->getFetchOffsets());
         }
 
         $this->state->succRun(State::REQUEST_FETCH_OFFSET);
@@ -670,11 +669,11 @@ class Process
                     $this->messages[$topic['topicName']][$part['partition']][] = $message;
 
                     $offset = $message['offset'];
+                    $assign->setCommitOffset($topic['topicName'], $part['partition'], $offset);
                 }
 
                 $consumerOffset = ($part['highwaterMarkOffset'] > $offset) ? ($offset + 1) : $offset;
                 $assign->setConsumerOffset($topic['topicName'], $part['partition'], $consumerOffset);
-                $assign->setCommitOffset($topic['topicName'], $part['partition'], $offset);
             }
         }
 
